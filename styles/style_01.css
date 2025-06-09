@@ -196,3 +196,7 @@ img.scaled {
     flex-direction: row;
     justify-content: space-evenly;
   }
+
+  a:link {
+      color: black;    
+  }
