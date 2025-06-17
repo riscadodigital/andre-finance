@@ -201,3 +201,13 @@ img.scaled {
   a:link {
       color: black;    
   }
+
+
+div.gecko {
+    margin-bottom: 150px;
+    margin-left: 15%;
+    margin-right: 15%; 
+    display: block; 
+    justify-content: center; 
+    
+  }
