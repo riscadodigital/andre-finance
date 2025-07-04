@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>André [Finance] | BTC Checker</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles/style_btc_checker.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header class="header0">
+
+    <h1> <a href="index.html"><img class="logotipo" src="images/andrefinance.png"></a></h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Aplicativos</a>    
+                <div class="dropdown-content">
+                    <a href="Conversor.html">Conversor Moedas</a>
+                    <a href="Satoshis.html">Conversor Satoshi</a>
+                    <a href="BTC Fees.html">BTC Fees</a>
+                    <a href="BTC Checker.html">BTC Checker</a>
+                    <a href="ETH Checker.html">ETH Checker</a>
+                    <a href="BNB Checker.html">BNB Checker<a>                                       
+                </div>
+            <li><a href="Carteiras.html">Carteiras</a></li>
+            <li><a href="Segurança.html">Segurança</a></li>                                   
+            <li><a href="Exchanges.html">Exchanges</a></li>
+            <li><a href="Explorers.html">Explorers</a></li>
+            <li><a href="GasFees.html">Gas/Fees</a></li>
+            <li><a href="Análises.html">Análises</a></li>
+            <li><a href="DeFi.html">DeFi</a></li>            
+
+            <li><a href="Contratos.html">Contratos</a></li>            
+            <li><a href="Portfolio.html">Portfolio</a></li>
+            <li><a href="Meupass.html">Meupass</a></li>
+            
+            
+                
+
+        </ul>
+    </nav>
+
+    
+
+    </header>
+
+
+<main>
+        
+<h2>[ BTC Checker ]</h2>
+
+<div class="main-container">
+<div class="container">
+    <textarea id="btc-input" rows="6" placeholder="Insira um ou mais endereços (um por linha)"></textarea>
+    <button id="check-btn">Consultar</button>
+    <button id="export-csv" class="hidden">Exportar CSV</button>
+    <button id="export-json" class="hidden">Exportar JSON</button>
+
+    <div id="result"></div>
+</div>
+</div>
+
+
+<script>
+  const results = [];
+  let btcPriceUSD = 0;
+  let btcPriceBRL = 0;
+
+  function isValidBTCAddress(address) {
+    return /^(1|3|bc1)[a-zA-HJ-NP-Z0-9]{25,39}$/i.test(address);
+  }
+
+  async function fetchBTCPrices() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,brl');
+      const data = await res.json();
+      btcPriceUSD = data.bitcoin.usd;
+      btcPriceBRL = data.bitcoin.brl;
+    } catch {
+      btcPriceUSD = 0;
+      btcPriceBRL = 0;
+    }
+  }
+
+  function renderResults() {
+    const container = document.getElementById('result');
+    container.innerHTML = '';
+
+    let totalBTC = 0;
+
+    results.forEach(item => {
+      const div = document.createElement('div');
+      div.classList.add('result-box');
+
+      if (item.error) {
+        div.innerHTML = `<strong>${item.address}</strong><br><span class="error">Erro: ${item.error}</span>`;
+      } else {
+        const usdValue = item.balance * btcPriceUSD;
+        const brlValue = item.balance * btcPriceBRL;
+        totalBTC += item.balance;
+
+        let txHtml = '';
+        if (item.txs && item.txs.length > 0) {
+          txHtml = '<ul>' + item.txs.slice(0, 5).map(tx => {
+            return `<li><code>${tx.txid}</code> - ${tx.status.confirmed ? 'Confirmada' : 'Não confirmada'}</li>`;
+          }).join('') + '</ul>';
+        } else {
+          txHtml = '<p>Nenhuma transação recente.</p>';
+        }
+
+        div.innerHTML = `
+          <strong>Endereço:</strong> ${item.address}<br>
+          <strong>Saldo:</strong> ${item.balance.toFixed(8)} BTC<br>
+          <strong>Valor em USD:</strong> $${usdValue.toFixed(2)}<br>
+          <strong>Valor em BRL:</strong> R$ ${brlValue.toFixed(2)}<br>
+          <strong>Transações:</strong> ${item.txCount}<br>
+          <strong>Últimas transações:</strong> ${txHtml}
+        `;
+      }
+
+      container.appendChild(div);
+    });
+
+    if (btcPriceUSD > 0 && btcPriceBRL > 0) {
+      const totalUSD = totalBTC * btcPriceUSD;
+      const totalBRL = totalBTC * btcPriceBRL;
+      const summary = document.createElement('div');
+      summary.classList.add('result-box');
+      summary.innerHTML = `
+        <strong>Total BTC:</strong> ${totalBTC.toFixed(8)} BTC<br>
+        <strong>Total em USD:</strong> $${totalUSD.toFixed(2)}<br>
+        <strong>Total em BRL:</strong> R$ ${totalBRL.toFixed(2)}
+      `;
+      container.prepend(summary);
+    }
+
+    document.getElementById('export-csv').classList.remove('hidden');
+    document.getElementById('export-json').classList.remove('hidden');
+  }
+
+  async function fetchData(address) {
+    const endpoint = `https://mempool.space/api/address/${address}`;
+    const txEndpoint = `https://mempool.space/api/address/${address}/txs`;
+
+    try {
+      const info = await $.get(endpoint);
+      const txs = await $.get(txEndpoint);
+
+      const funded = info.chain_stats.funded_txo_sum;
+      const spent = info.chain_stats.spent_txo_sum;
+      const balance = (funded - spent) / 100000000;
+
+      results.push({
+        address,
+        balance,
+        txCount: info.chain_stats.tx_count,
+        txs
+      });
+    } catch (err) {
+      results.push({ address, error: "Falha na consulta." });
+    }
+  }
+
+  function exportCSV() {
+    const headers = ['Endereço', 'Saldo (BTC)', 'Transações', 'USD', 'BRL'];
+    const rows = results.filter(r => !r.error).map(r => [
+      r.address,
+      r.balance.toFixed(8),
+      r.txCount,
+      (r.balance * btcPriceUSD).toFixed(2),
+      (r.balance * btcPriceBRL).toFixed(2)
+    ]);
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    downloadFile(csv, 'saldos_bitcoin.csv', 'text/csv');
+  }
+
+  function exportJSON() {
+    const enriched = results.map(r => {
+      if (r.error) return r;
+      return {
+        ...r,
+        value_usd: (r.balance * btcPriceUSD).toFixed(2),
+        value_brl: (r.balance * btcPriceBRL).toFixed(2)
+      };
+    });
+    const json = JSON.stringify(enriched, null, 2);
+    downloadFile(json, 'saldos_bitcoin.json', 'application/json');
+  }
+
+  function downloadFile(content, filename, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('check-btn').addEventListener('click', async () => {
+    const input = document.getElementById('btc-input').value.trim();
+    const addresses = input.split('\n').map(a => a.trim()).filter(a => a);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+    results.length = 0;
+
+    const invalid = addresses.filter(a => !isValidBTCAddress(a));
+    if (invalid.length > 0) {
+      resultDiv.innerHTML = `<div class="error">Endereço(s) inválido(s): ${invalid.join(', ')}</div>`;
+      return;
+    }
+
+    await fetchBTCPrices();
+
+    for (let i = 0; i < addresses.length; i++) {
+      await fetchData(addresses[i]);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    renderResults();
+  });
+
+  document.getElementById('export-csv').addEventListener('click', exportCSV);
+  document.getElementById('export-json').addEventListener('click', exportJSON);
+</script>
+
+        
+        
+        
+
+</main>
+</body>
+
+
+<footer>
+
+<h4>─ André [Finance] 2025 ─</h4>
+
+</footer>
+</html>
