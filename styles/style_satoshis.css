@@ -210,3 +210,10 @@ footer {
     */
 
   }
+
+
+.counter {
+  display: flex;
+  align-self: start;
+  margin-left: 8px;
+}  
