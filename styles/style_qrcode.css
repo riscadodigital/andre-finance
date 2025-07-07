@@ -210,3 +210,9 @@ footer {
   h4 {
     color: white;
   }
+
+.counter {
+  display: flex;
+  align-self: start;
+  margin-left: 8px;
+}  
