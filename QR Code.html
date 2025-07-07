@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>André [Finance] | Segurança</title>
+    <title>André [Finance] | Gerador de QR Code</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <link rel="stylesheet" href="styles/style_01.css">
+    <link rel="stylesheet" href="styles/style_qrcode.css">
 </head>
 <body>
-    <h1> <a href="index.html"><img class="logotipo" src="images/andrefinance.png"></a></h1>
-    
+    <header class="header0">
 
-<header class="header0">
+    <h1> <a href="index.html"><img class="logotipo" src="images/andrefinance.png"></a></h1>
     <nav>
         <ul>
             <li><a href="index.html">Início</a></li>
@@ -39,76 +38,48 @@
             <li><a href="Serviços.html">Serviços</a></li>
             <li><a href="Meupass.html">Meupass</a></li>
         </ul>
-    </nav>
-</header>
-    
+    </nav>  
 
-
-
+    </header>
 
     
+
+
     <main>
-        <h2>[ Segurança ]</h2>
+        <h2>[ Gerador de QR Code Personalizado ]</h2>
+        <div class="main-container">
+	
+        
+        <div class="container">
+        
+        <input type="text" id="qrText" placeholder="Digite o texto ou URL aqui">
+        
+        <label for="size">Tamanho (px):</label>
+        <input type="number" id="size" value="200" min="100" max="500">
+        
+        <label for="qrColor">Cor do QR Code:</label>
+        <input type="color" id="qrColor" value="#000000">
+        
+        <label for="bgColor">Cor de Fundo:</label>
+        <input type="color" id="bgColor" value="#ffffff">
+        
+        <button id="generateBtn">Gerar QR Code</button>
+        
+        <div id="qrcode"></div>
 
-    <div class="center-image" >
-            <a href="https://pocketuniverse.app/" target="_blank">
-                <p><img class="scaled" src="images/pocket_universe.png" alt="" style="width: 200px; ">
-                
-            </a>    
-    </div>    
+        </div>
 
-
-    <div class="center-image" >
-            <a href="https://revoke.cash/" target="_blank">
-                <p><img class="scaled" src="images/revoke.png" alt="" style="width: 200px; ">
-                
-            </a>    
-    </div>
-
-
-    <div class="center-image" >
-            <a href="https://www.scamsniffer.io/" target="_blank">
-                <p><img class="scaled" src="images/scamsniffer.png" alt="" style="width: 200px; ">
-                
-            </a>    
-    </div>
-
-
-    <h2 style="margin-top: 80px">[ Privacidade ]</h2>
-
-   <div class="center-image" >
-            <a href="https://chainlist.org/" target="_blank">
-                <p><img class="scaled" src="images/chainlist.png" alt="" style="width: 200px; ">
-                
-            </a>    
-    </div> 
-
-    <div class="center-image" >
-            <a href="https://www.1rpc.io/" target="_blank">
-                <p><img class="scaled" src="images/1RPC.png" alt="" style="width: 200px; ">
-                
-            </a>    
-    </div> 
-
-
-
-
+        </div><!--main-container-->
     
 
-
-
-
-    
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script src="scripts/script_qrcode.js"></script>
     </main>
-
 </body>
 <footer>
 
 <h4>─ André [Finance] 2025 ─</h4>
 
 </footer>
+</html>
 </html>

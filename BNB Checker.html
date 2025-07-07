@@ -17,12 +17,13 @@
             <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn">Aplicativos</a>    
                 <div class="dropdown-content">
-                    <a href="Conversor.html">Conversor Moedas</a>
-                    <a href="Satoshis.html">Conversor Satoshi</a>
+                    <a href="Satoshis.html">Conversor de Satoshis</a>                    
                     <a href="BTC Fees.html">BTC Fees</a>
                     <a href="BTC Checker.html">BTC Checker</a>
                     <a href="ETH Checker.html">ETH Checker</a>
                     <a href="BNB Checker.html">BNB Checker</a>                    
+                    <a href="Conversor.html">Conversor de Moedas</a>
+                    <a href="QR Code.html">Gerador de QR Code</a>                    
                 </div>
             <li><a href="Carteiras.html">Carteiras</a></li>
             <li><a href="Segurança.html">Segurança</a></li>                                   
@@ -31,14 +32,11 @@
             <li><a href="GasFees.html">Gas/Fees</a></li>
             <li><a href="Análises.html">Análises</a></li>
             <li><a href="DeFi.html">DeFi</a></li>            
-  
+
             <li><a href="Contratos.html">Contratos</a></li>            
             <li><a href="Portfolio.html">Portfolio</a></li>
+            <li><a href="Serviços.html">Serviços</a></li>
             <li><a href="Meupass.html">Meupass</a></li>
-            
-            
-                
-
         </ul>
     </nav>
 
@@ -46,7 +44,7 @@
 
 
     <main>
-
+<!--
   <h2>[ BSC Balance Checker ]</h2>    
   <div class="main-container">    
   <div class="container">
@@ -160,7 +158,147 @@
     }
   </script>
 
+-->
 
+
+<h2>[ BNB Balance Checker ]</h2>
+<div class="main-container">    
+<div class="container">
+  <textarea id="addresses" placeholder="Insira um ou mais endereços (separados por vírgula)"></textarea>
+  <button onclick="getBalances()">Check Balances</button>
+  <button id="copyButton" onclick="copyTable()" style="display: none;">Copy Table</button>
+  <div id="result"></div>
+</div>
+</div>
+
+<script>
+  let bnbPriceUSD = 0;
+  let bnbPriceBRL = 0;
+
+  async function fetchBNBPrices() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd,brl');
+      const data = await res.json();
+      bnbPriceUSD = data.binancecoin.usd;
+      bnbPriceBRL = data.binancecoin.brl;
+    } catch (err) {
+      console.error('Erro ao buscar cotação do BNB:', err);
+      bnbPriceUSD = 0;
+      bnbPriceBRL = 0;
+    }
+  }
+
+  async function getBalances() {
+    const input = document.getElementById('addresses').value;
+    const resultDiv = document.getElementById('result');
+    const copyButton = document.getElementById('copyButton');
+    resultDiv.innerHTML = 'Checking balances...';
+    copyButton.style.display = 'none';
+
+    const addresses = input
+      .split(',')
+      .map(addr => addr.trim())
+      .filter(addr => /^0x[a-fA-F0-9]{40}$/.test(addr));
+
+    if (addresses.length === 0) {
+      resultDiv.textContent = 'No valid addresses found.';
+      return;
+    }
+
+    await fetchBNBPrices(); // get USD/BRL values
+
+    const balances = await Promise.all(
+      addresses.map(async (address) => {
+        const options = {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: 1,
+            jsonrpc: '2.0',
+            params: [address, 'latest'],
+            method: 'eth_getBalance'
+          })
+        };
+
+        try {
+          const res = await fetch('https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3', options);
+          const data = await res.json();
+          if (data.result) {
+            const balanceInWei = BigInt(data.result);
+            const balanceBNB = Number(balanceInWei) / 1e18;
+            return {
+              address,
+              balance: balanceBNB,
+              usd: balanceBNB * bnbPriceUSD,
+              brl: balanceBNB * bnbPriceBRL
+            };
+          }
+        } catch (error) {
+          // erro ignorado
+        }
+        return { address, balance: null };
+      })
+    );
+
+    const validBalances = balances.filter(b => b.balance !== null);
+    validBalances.sort((a, b) => b.balance - a.balance); // ordem decrescente
+
+    if (validBalances.length === 0) {
+      resultDiv.textContent = 'No valid balances could be retrieved.';
+      return;
+    }
+
+    let tableHTML = `
+      <table id="balanceTable">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Balance (BNB)</th>
+            <th>USD</th>
+            <th>BRL</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    for (const { address, balance, usd, brl } of validBalances) {
+      tableHTML += `
+        <tr>
+          <td>${address}</td>
+          <td>${balance.toFixed(6)}</td>
+          <td>$${usd.toFixed(2)}</td>
+          <td>R$ ${brl.toFixed(2)}</td>
+        </tr>
+      `;
+    }
+
+    tableHTML += `</tbody></table>`;
+    resultDiv.innerHTML = tableHTML;
+    copyButton.style.display = 'inline-block';
+  }
+
+  function copyTable() {
+    const table = document.getElementById('balanceTable');
+    if (!table) return;
+
+    let text = '';
+    const rows = table.querySelectorAll('tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('th, td');
+      const rowText = Array.from(cells).map(cell => cell.textContent.trim()).join('\t');
+      text += rowText + '\n';
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Table copied to clipboard!');
+    }).catch(err => {
+      alert('Failed to copy table: ' + err);
+    });
+  }
+</script>
 
 
 
