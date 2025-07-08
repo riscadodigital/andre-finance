@@ -225,8 +225,16 @@ img.scaled {
     align-items: center;
     flex-direction: row;
     justify-content: space-around;
-
   }
+
+  .btc-wallet {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+
 
 
   /*
