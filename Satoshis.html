@@ -43,25 +43,25 @@
 
 
     <main>
-  <div class="main-container">      
+ <div class="main-container">      
   <section class="container">
   <h1>Conversor <img class="satoshi" src="images/Satoshi regular elipse.png"> Satoshis</h1>
   
-  <div>
+  <div class="satoshi-A">
     <label for="satoshiInput1">Satoshi:</label>
     <input type="number" id="satoshiInput1" placeholder="Quantidade de satoshi">
     <button onclick="converter()">Valor em BRL</button>
-  </div>  
+  </div><!--satoshi-A-->  
   <div id="resultado"></div>
 
-  <div>
+  <div class="satoshi-A">
     <label for="satoshiInput2">Satoshi:</label>
     <input type="number" id="satoshiInput2" placeholder="Quantidade de satoshi">
     <button onclick="converter2()">Valor em USD</button>
-  </div>  
+  </div><!--satoshi-A-->  
   <div id="resultado2"></div>
   </section>
-  </div>
+  </div><!--main-container-->
   
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="scripts/script_satoshi.js"></script>
