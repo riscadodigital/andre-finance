@@ -255,9 +255,9 @@ img.scaled {
   }
 
 .counter {
-  display: flex;
-  align-self: start;
-  margin-left: 8px;
+    display: flex;
+	align-content: center;
+	justify-content: center;
 }  
 
 
