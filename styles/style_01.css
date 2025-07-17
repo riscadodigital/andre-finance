@@ -3,8 +3,7 @@
     border: none;
     text-decoration: none;
     transition: 0.4 linear;
-
-    
+    scrollbar-width: none;    
 
 }
 
@@ -18,6 +17,7 @@ body {
     background-image: url("../images/bg001.png");    
     align-items: center;
     /*justify-content: center;*/
+    
 }
 
 .header0 {
@@ -109,12 +109,10 @@ li.dropdown {
 
 
 
-
 main {
     text-align: center;
     padding: 20px 4px;
 }
-
 
 
 
@@ -127,8 +125,6 @@ img.scaled {
 .logotipo {
     width: 200px;
 } 
-
-
 
 
 
@@ -205,7 +201,8 @@ img.scaled {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  padding: 0.05em;
+  padding: 0.05em;  
+  transition: transform 0.3s;
   }
 
   .center-image:hover {
@@ -220,21 +217,19 @@ img.scaled {
   }
   
 
-  .evm-wallet {
+  .evm-wallet {        
     display: flex;
     align-items: center;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;    
   }
 
   .btc-wallet {
     display: flex;
     align-items: center;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
   }
-
-
 
 
   /*
@@ -254,11 +249,13 @@ img.scaled {
     
   }
 
+
+
+
 .counter {
-    display: flex;
+	display: flex;
 	align-content: center;
 	justify-content: center;
 }  
-
 
   
