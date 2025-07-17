@@ -145,17 +145,22 @@ label {
 }
 
 input {
+  all: unset;
   width: 152px;
   padding: 5px;
-  border: 1px solid #f7931a;
-  
+  border: 1px solid #8247e5;
+  border-radius: 4px;  
+}
+
+input::placeholder {
+  font-size: .8rem;
 }
 
 button {
   background-color: #8247e5;
   color: white;
   border: #8247e5;
-  padding: 6px 10px;
+  padding: 6px 8px;
   cursor: pointer;
   border-radius: 5px;  
 }
