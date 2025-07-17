@@ -1,3 +1,13 @@
+* {
+    outline: none;
+    border: none;
+    text-decoration: none;
+    transition: 0.4 linear;
+    scrollbar-width: none;    
+
+}
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -132,7 +142,7 @@ h1 {
   width: 26px;
 }
 
-div .satoshi-A {
+div .satoshi-A  {
   margin-bottom: 10px;
   padding-bottom: 10px;
 }
@@ -149,8 +159,15 @@ input {
   width: 152px;
   padding: 5px;
   border: 1px solid #8247e5;
-  border-radius: 4px;  
+  border-radius: 4px;
+  transition: border .3s ease-in-out;  
 }
+
+/* input:focus {
+  border: 2px solid;
+  border-color: #9050fd;
+}
+*/
 
 input::placeholder {
   font-size: .8rem;
@@ -175,7 +192,7 @@ button:hover {
   border-radius: 5px;
   border: 1px solid #01a5a55e;
   padding: 6px 10px;
-  margin-bottom: 32px;  
+  margin-bottom: 34px;
   margin-left: auto;
   margin-right: auto;
   max-width: 270px;
@@ -188,7 +205,7 @@ button:hover {
   border-radius: 5px;
   border: 1px solid #01a5a55e;
   padding: 6px 10px;
-  margin-bottom: 32px;  
+  margin-bottom: 32px;
   margin-left: auto;
   margin-right: auto;
   max-width: 270px;
@@ -217,10 +234,3 @@ footer {
     */
 
   }
-
-
-.counter {
-	display: flex;
-	align-content: center;
-	justify-content: center;  
-}  
