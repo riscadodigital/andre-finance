@@ -3,6 +3,7 @@
     border: none;
     text-decoration: none;
     transition: 0.4 linear;
+    scrollbar-width: none;
 }
 
 
@@ -298,10 +299,3 @@ footer {
     */
 
   }
-
-
-.counter {
-    display: flex;
-	align-content: center;
-	justify-content: center;  
-}  
