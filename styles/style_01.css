@@ -3,7 +3,7 @@
     border: none;
     text-decoration: none;
     transition: 0.4 linear;
-    scrollbar-width: none;    
+    scrollbar-width: thin;    
 
 }
 
